@@ -14,7 +14,7 @@ server.use(express.json());
 server.use(express.static(__dirname + '/public')); // Thanks Jay DeLeonardis
 
 // Path constants
-const DBPATH = "/db/db.json";
+const DBPATH = "./db/db.json";
 
 // Routes
 server.get("/notes", (req, res) => res.sendFile(path.join(__dirname, "/public/notes.html")));
@@ -29,17 +29,14 @@ server.get("/api/notes", (req, res) => {
 });
 
 // POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
-// server.post("/api/notes", (req, res) => {
-//     fs.readFile(DBPATH, "utf8", (err, data) => {
-//         if (err) console.log(err);
-//         data = JSON.parse(data);
-//         console.log(typeof data, "\n", data);
-//         console.log(typeof req.body, "\n", req.body);
-//         console.log(data.concat(req.body));
-// fs.writeFile(DBPATH, JSON.stringify(data.concat(req.body)), (err) => err ? console.log(err) : null);
-// });
-// return res.json(req.body);
-// });
+server.post("/api/notes", (req, res) => {
+    fs.readFile(DBPATH, "utf8", (err, data) => {
+        if (err) console.log(err);
+        const output = JSON.stringify(JSON.parse(data).concat(req.body));
+        fs.writeFile(DBPATH, output, (err) => { if (err) console.log(err) });
+    });
+    return res.json(req.body);
+});
 
 
 
