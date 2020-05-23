@@ -13,42 +13,42 @@ server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
 server.use(express.static(__dirname + '/public')); // Thanks Jay DeLeonardis
 
-// Path constants
+// Path to database
 const DBPATH = "./db/db.json";
 
 // Routes
 server.get("/notes", (req, res) => res.sendFile(path.join(__dirname, "/public/notes.html")));
-// server.get("*", (req, res) => res.sendFile(path.join(__dirname, "/public/index.html")));
+server.get("*", (req, res) => res.sendFile(path.join(__dirname, "/public/index.html")));
 
-// GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON.
-server.get("/api/notes", (req, res) => {
+// Reads database file and returns all saved notes as JSON
+server.get("/api/notes", (req, res, next) => {
     fs.readFile(DBPATH, "utf8", (err, data) => {
-        if (err) console.log(err);
+        if (err) next(err);
         return res.json(JSON.parse(data));
     });
 });
 
-// POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
-server.post("/api/notes", (req, res) => {
+// Upon receiving new note, assigns a unique id, saves to the database, and returns note to client
+server.post("/api/notes", (req, res, next) => {
     fs.readFile(DBPATH, "utf8", (err, data) => {
-        if (err) console.log(err);
-        // Create note object corresponding to req data with unique id
+        if (err) next(err);
         const note = {
             title: req.body.title,
             text: req.body.text,
             id: uuid(),
         };
         const output = JSON.stringify(JSON.parse(data).concat(note));
-        fs.writeFile(DBPATH, output, (err) => { if (err) console.log(err) });
+        fs.writeFile(DBPATH, output, (err) => { if (err) next(err) });
     });
-    return res.json(req.body);
+    return res.json(note);
 });
 
-// DELETE `/api/notes/:id` - Should receive a query parameter containing the id of a note to delete. This means you'll need to find a way to give each note a unique `id` when it's saved. In order to delete a note, you'll need to read all notes from the `db.json` file, remove the note with the given `id` property, and then rewrite the notes to the `db.json` file.
+// Upon receiving a unique id, deletes corresponding note from the database and returns id to client
 server.delete("/api/notes/:id", (req, res) => {
     fs.readFile(DBPATH, "utf8", (err, data) => {
+        if (err) next(err);
         const output = JSON.stringify(JSON.parse(data).filter(note => note.id !== req.params.id));
-        fs.writeFile(DBPATH, output, (err) => { if (err) console.log(err) });
+        fs.writeFile(DBPATH, output, (err) => { if (err) next(err) });
     });
     return res.send(req.body.id);
 });
