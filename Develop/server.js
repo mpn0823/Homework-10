@@ -18,7 +18,7 @@ const DBPATH = "./db/db.json";
 
 // Routes
 server.get("/notes", (req, res) => res.sendFile(path.join(__dirname, "/public/notes.html")));
-// server.get("*", (req, res) => res.sendFile(path.join(__dirname, "/public/index.html")));
+server.get("*", (req, res) => res.sendFile(path.join(__dirname, "/public/index.html")));
 
 // Reads database file and returns all saved notes as JSON
 server.get("/api/notes", (req, res, next) => {
