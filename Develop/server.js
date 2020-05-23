@@ -18,7 +18,7 @@ const DBPATH = "./db/db.json";
 
 // Routes
 server.get("/notes", (req, res) => res.sendFile(path.join(__dirname, "/public/notes.html")));
-server.get("*", (req, res) => res.sendFile(path.join(__dirname, "/public/index.html")));
+// server.get("*", (req, res) => res.sendFile(path.join(__dirname, "/public/index.html")));
 
 // Reads database file and returns all saved notes as JSON
 server.get("/api/notes", (req, res, next) => {
@@ -30,13 +30,14 @@ server.get("/api/notes", (req, res, next) => {
 
 // Upon receiving new note, assigns a unique id, saves to the database, and returns note to client
 server.post("/api/notes", (req, res, next) => {
+    const note = {
+        title: req.body.title,
+        text: req.body.text,
+        id: uuid(),
+    };
+    console.log(note);
     fs.readFile(DBPATH, "utf8", (err, data) => {
         if (err) next(err);
-        const note = {
-            title: req.body.title,
-            text: req.body.text,
-            id: uuid(),
-        };
         const output = JSON.stringify(JSON.parse(data).concat(note));
         fs.writeFile(DBPATH, output, (err) => { if (err) next(err) });
     });
