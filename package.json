@@ -1,15 +1,23 @@
 {
-    "name": "note-taker",
+    "name": "homework-10",
     "version": "1.0.0",
-    "description": "",
+    "description": "note taker app",
     "main": "server.js",
     "scripts": {
-        "start": "node server.js"
+        "start": "node ./Develop/server.js"
     },
-    "author": "",
-    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mpn0823/Homework-10.git"
+    },
+    "author": "Michael P Nance",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/mpn0823/Homework-10/issues"
+    },
+    "homepage": "https://github.com/mpn0823/Homework-10#readme",
     "dependencies": {
         "express": "^4.17.1",
-        "uuid": "^8.0.0"
+        "uuid": "^8.1.0"
     }
 }

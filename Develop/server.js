@@ -16,10 +16,6 @@ server.use(express.static(__dirname + '/public')); // Thanks Jay DeLeonardis
 // Path to database
 const DBPATH = "./db/db.json";
 
-// Routes
-server.get("/notes", (req, res) => res.sendFile(path.join(__dirname, "/public/notes.html")));
-server.get("*", (req, res) => res.sendFile(path.join(__dirname, "/public/index.html")));
-
 // Reads database file and returns all saved notes as JSON
 server.get("/api/notes", (req, res, next) => {
     fs.readFile(DBPATH, "utf8", (err, data) => {
@@ -35,7 +31,6 @@ server.post("/api/notes", (req, res, next) => {
         text: req.body.text,
         id: uuid(),
     };
-    console.log(note);
     fs.readFile(DBPATH, "utf8", (err, data) => {
         if (err) next(err);
         const output = JSON.stringify(JSON.parse(data).concat(note));
@@ -53,6 +48,10 @@ server.delete("/api/notes/:id", (req, res) => {
     });
     return res.send(req.body.id);
 });
+
+// HTML routes
+server.get("/notes", (req, res) => res.sendFile(path.join(__dirname, "/public/notes.html")));
+server.get("*", (req, res) => res.sendFile(path.join(__dirname, "/public/index.html")));
 
 // Start Server
 server.listen(port, function() {
