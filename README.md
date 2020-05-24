@@ -1,5 +1,3 @@
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/mpn0823/Homework-10)
-
 # Note Taker
 
 Web app that lets you save notes
